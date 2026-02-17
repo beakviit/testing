@@ -1,0 +1,66 @@
+{% extends "shop/base.html" %}
+
+{% block title %}
+    {% if category %}{{ category.name }} - {% endif %}Products
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Categories</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'shop:product_list' %}">All Products</a></li>
+                    {% for c in categories %}
+                        <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <h1>
+            {% if category %}{{ category.name }}{% else %}Products{% endif %}
+            {% if query %} - Search Results for "{{ query }}"{% endif %}
+        </h1>
+        
+        {% if products %}
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <i class="fas fa-image fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                                <p class="card-text"><strong>${{ product.price }}</strong></p>
+                                <div class="mt-auto">
+                                    <a href="{{ product.get_absolute_url }}" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                {% if query %}
+                    No products found matching your search.
+                {% else %}
+                    No products available in this category.
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

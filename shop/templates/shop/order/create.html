@@ -1,0 +1,42 @@
+{% extends "shop/base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<h1>Checkout</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5>Shipping Information</h5>
+            </div>
+            <div class="card-body">
+                {% load crispy_forms_tags %}
+                {{ form|crispy }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Order Summary</h5>
+            </div>
+            <div class="card-body">
+                {% for item in cart.items.all %}
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>{{ item.product.name }} ({{ item.quantity }})</span>
+                        <span>${{ item.get_cost }}</span>
+                    </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <strong>Total:</strong>
+                    <strong>${{ cart.get_total_price }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

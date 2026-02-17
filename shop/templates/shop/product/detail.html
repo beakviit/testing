@@ -1,0 +1,71 @@
+{% extends "shop/base.html" %}
+
+{% block title %}{{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid" alt="{{ product.name }}">
+        {% else %}
+            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+                <i class="fas fa-image fa-5x text-muted"></i>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-md-6">
+        <h1>{{ product.name }}</h1>
+        <p class="text-muted">Category: <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+        <h3 class="text-primary">${{ product.price }}</h3>
+        
+        <p>{{ product.description }}</p>
+        
+        <div class="alert alert-info">
+            <i class="fas fa-box"></i> Stock: {{ product.stock }} units available
+        </div>
+        
+        <form method="post" action="{% url 'shop:cart_add' product.id %}">
+            {% csrf_token %}
+            {{ cart_product_form.as_p }}
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h3>Product Details</h3>
+        <table class="table">
+            <tr>
+                <th>Name:</th>
+                <td>{{ product.name }}</td>
+            </tr>
+            <tr>
+                <th>Category:</th>
+                <td>{{ product.category.name }}</td>
+            </tr>
+            <tr>
+                <th>Price:</th>
+                <td>${{ product.price }}</td>
+            </tr>
+            <tr>
+                <th>Stock:</th>
+                <td>{{ product.stock }}</td>
+            </tr>
+            <tr>
+                <th>Available:</th>
+                <td>
+                    {% if product.available %}
+                        <span class="badge bg-success">Yes</span>
+                    {% else %}
+                        <span class="badge bg-danger">No</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+{% endblock %}

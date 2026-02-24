@@ -1,0 +1,96 @@
+{% extends "assignments/base.html" %}
+
+{% block assignment_title %}{{ assignment.title }}{% endblock %}
+
+{% block assignment_content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-tasks"></i> {{ assignment.title }}</h3>
+            </div>
+            <div class="card-body">
+                <p class="lead">{{ assignment.description }}</p>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-star"></i> Max Score:</strong> {{ assignment.max_score }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-calendar"></i> Due Date:</strong> {{ assignment.due_date|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-calendar-plus"></i> Created:</strong> {{ assignment.created_at|date:"M d, Y" }}
+                    </div>
+                    <div class="col-md-6">
+                        <strong><i class="fas fa-calendar-check"></i> Updated:</strong> {{ assignment.updated_at|date:"M d, Y" }}
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <h5><i class="fas fa-info-circle"></i> Instructions</h5>
+                <div class="bg-light p-3 rounded">
+                    {{ assignment.instructions|linebreaks }}
+                </div>
+                
+                {% if user.is_authenticated %}
+                    <div class="mt-4">
+                        {% if user_submission %}
+                            <div class="alert alert-info">
+                                <i class="fas fa-check-circle"></i> You have already submitted this assignment.
+                                <a href="{% url 'assignments:submission_detail' user_submission.id %}" class="btn btn-sm btn-primary ms-2">
+                                    View Submission
+                                </a>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'assignments:submit_assignment' assignment.id %}" class="btn btn-success btn-lg">
+                                <i class="fas fa-upload"></i> Submit Assignment
+                            </a>
+                        {% endif %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> 
+                        Please <a href="{% url 'login' %}">log in</a> to submit this assignment.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Assignment Info</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Text submission allowed</li>
+                    <li><i class="fas fa-check text-success"></i> File upload supported</li>
+                    <li><i class="fas fa-check text-success"></i> Instructor feedback</li>
+                    <li><i class="fas fa-check text-success"></i> Track submission status</li>
+                </ul>
+                
+                {% if user_submission %}
+                    <hr>
+                    <h6>Your Submission</h6>
+                    <p><strong>Status:</strong> 
+                        {% if user_submission.is_late %}
+                            <span class="badge bg-warning">Late</span>
+                        {% else %}
+                            <span class="badge bg-success">On Time</span>
+                        {% endif %}
+                    </p>
+                    {% if user_submission.score %}
+                        <p><strong>Score:</strong> {{ user_submission.score }}/{{ assignment.max_score }}</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

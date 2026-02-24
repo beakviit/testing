@@ -1,0 +1,71 @@
+{% extends "assignments/base.html" %}
+
+{% block assignment_title %}Submit Assignment{% endblock %}
+
+{% block assignment_content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-upload"></i> Submit Assignment: {{ assignment.title }}</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Due Date:</strong> {{ assignment.due_date|date:"M d, Y H:i" }}
+                        {% if assignment.due_date < now %}
+                            <br><span class="text-danger">This assignment is overdue!</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Assignment Content</label>
+                        <textarea class="form-control" id="content" name="content" rows="10" 
+                                  placeholder="Write your assignment content here..." required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="file_attachment" class="form-label">File Attachment (Optional)</label>
+                        <input type="file" class="form-control" id="file_attachment" name="file_attachment" 
+                               accept=".pdf,.doc,.docx,.txt,.jpg,.png">
+                        <div class="form-text">Accepted formats: PDF, DOC, DOCX, TXT, JPG, PNG</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'assignments:assignment_detail' assignment.id %}" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-upload"></i> Submit Assignment
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle"></i> Submission Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> Write clearly and concisely</li>
+                    <li><i class="fas fa-check text-success"></i> Follow all instructions</li>
+                    <li><i class="fas fa-check text-success"></i> Proofread before submitting</li>
+                    <li><i class="fas fa-check text-success"></i> Submit before the deadline</li>
+                </ul>
+                
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Note:</strong> You can only submit once. Make sure your work is complete before submitting.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
